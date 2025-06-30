@@ -82,9 +82,8 @@ def clean_metadata(file: str):
     data = pd.read_csv(file)
     df = pd.DataFrame(data)
 
-    year = file.split('/')[-1].split('.')[0].split("_")[-1]
-    if year != '2025':
-        df['game_date'] = pd.to_datetime(df['game_date'], format='%A, %B %d, %Y', errors='coerce')
+    df['game_date'] = pd.to_datetime(df['game_date'])
+    df['game_date_ordinal'] = df['game_date'].map(pd.Timestamp.toordinal)
 
     label_encoder = preprocessing.LabelEncoder()
     df['game_loc']= label_encoder.fit_transform(df['game_loc'])
@@ -118,4 +117,5 @@ def combine_metadata(directory_path: str = "/Users/hannahwurzel/Desktop/MLB/meta
 
     return
 
-combine_metadata()
+df = clean_metadata("/Users/hannahwurzel/Desktop/MLB/metadata/metadata.csv")
+df.to_csv("/Users/hannahwurzel/Desktop/MLB/metadata/metadata_transformed.csv")
